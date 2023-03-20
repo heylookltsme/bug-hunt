@@ -1,0 +1,51 @@
+# Runs commitlint ✨
+#
+# See config file at: commitlint.config.js
+# https://commitlint.js.org/
+
+name: Lint Commit Messages
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+jobs:
+  commitlint:
+    runs-on: [self-hosted, linux, x64, small]
+    if: ${{ !startsWith(github.head_ref, 'revert') }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: commitlint-workflow
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16.18.0
+
+      - uses: pnpm/action-setup@v2.2.1
+        with:
+          version: 7.26.3
+
+      - uses: ./.github/actions/commitlint
+      #- uses: actions/setup-node@v2
+      #with:
+      #node-version: 16.18.0
+      #- uses: pnpm/action-setup@v2.2.1
+      #with:
+      #version: 7.26.3
+      #- uses: actions/cache@v3
+      #name: Setup pnpm cache
+      #with:
+      #path: |
+      #.pnpm-store
+      #pnpm
+      #key: ${{ runner.os }}-pnpm-store-frontend-${{ hashFiles('frontend/pnpm-lock.yaml') }}
+      #restore-keys: |
+      #${{ runner.os }}-pnpm-store-frontend
+      #- name: pnpm install
+      #run: pnpm install
+      #working-directory: frontend
+      #- name: install typescript
+      #run: npm install -g typescript
+      #working-directory: frontend
+      #- uses: corinne/commitlint@wip
+      #with:
+      #githubToken: ${{ secrets.GIT_ACTIONS_ADMIN_TOKEN }}
